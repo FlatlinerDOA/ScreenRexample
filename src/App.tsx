@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     const x = setInterval(() => {
       setCount(p => p + 1);
-    }, 1000)
+    }, 10)
 
     return () => {
       clearInterval(x);
@@ -33,7 +33,7 @@ function App() {
       </div>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)} className="mt-4" >
-          count is {count}
+          count is {(count * 0.01).toFixed(2)}
         </button>
       </div>
       <p className="read-the-docs">

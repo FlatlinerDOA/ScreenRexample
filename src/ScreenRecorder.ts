@@ -1,3 +1,4 @@
+import { fixWebmDuration } from "@fix-webm-duration/fix";
 interface RecorderConfig {
     mimeType: string;
     videoBitsPerSecond?: number;
@@ -8,6 +9,7 @@ interface RecorderConfig {
   
   class ScreenRecorder {
     private mediaRecorder: MediaRecorder | null = null;
+    private startTime: number = 0;
     private recordedChunks: Blob[] = [];
     private stream: MediaStream | null = null;
     private stateChangeCallbacks: Set<() => void> = new Set();
@@ -15,7 +17,8 @@ interface RecorderConfig {
     private recordingPromise: Promise<ArrayBuffer> | null = null;
     private recordingResolve: ((buffer: ArrayBuffer) => void) | null = null;
     private recordingReject: ((error: Error) => void) | null = null;
-  
+    private fixDuration = true;
+
     constructor(private config: RecorderConfig = {
       mimeType: 'video/webm',
       videoBitsPerSecond: 2500000,
@@ -114,6 +117,7 @@ interface RecorderConfig {
   
         // Start recording with timeslice
         this.mediaRecorder.start(this.config.timeslice);
+        this.startTime = Date.now();
         this.notifyStateChange();
   
         return this.recordingPromise;
@@ -151,19 +155,20 @@ interface RecorderConfig {
   
       const handleStop = async () => {
         try {
+          
           // Request any final data
           if (this.mediaRecorder?.state === 'recording') {
             this.mediaRecorder.requestData();
           }
+          const duration = Date.now() - this.startTime;
   
           // Wait briefly for final chunks
           await new Promise(resolve => setTimeout(resolve, 100));
-          
           const blob = new Blob(this.recordedChunks, { 
             type: this.mediaRecorder?.mimeType || 'video/webm'
           });
           
-          const buffer = await blob.arrayBuffer();
+          const buffer = this.fixDuration ? await (await fixWebmDuration(blob, duration)).arrayBuffer() : await blob.arrayBuffer();
           this.recordingResolve!(buffer);
           this.cleanup();
         } catch (error) {
