@@ -1,21 +1,28 @@
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import RecorderComponent from './RecorderComponent';
 
-function App() {
+const TimerComponent: React.FC = memo(() => {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    const x = setInterval(() => {
-      setCount(p => p + 1);
+    const timer = setInterval(() => {
+      setCount(c => c + 1);
     }, 10)
 
     return () => {
-      clearInterval(x);
+      clearInterval(timer);
     }
   }, []);
+
+  return <button onClick={() => setCount((count) => count + 1)} className="mt-4" >
+  Count is {(count * 0.01).toFixed(2)}
+</button>;
+});
+
+function App() {
 
   return (
     <>
@@ -32,9 +39,7 @@ function App() {
         <RecorderComponent />
       </div>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)} className="mt-4" >
-          Count is {(count * 0.01).toFixed(2)}
-        </button>
+        <TimerComponent/>
       </div>
       <p className="read-the-docs">
         Click to start recording your screen.

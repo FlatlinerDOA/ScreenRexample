@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import ScreenRecorder from "./ScreenRecorder";
 
-const RecorderComponent: React.FC = () => {
+const RecorderComponent: React.FC = memo(() => {
     const [isRecording, setIsRecording] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string>('');
     const recorderRef = useRef<ScreenRecorder>(new ScreenRecorder());
@@ -80,6 +80,6 @@ const RecorderComponent: React.FC = () => {
         </div>
       </div>
     );
-  };
+  });
   
   export default RecorderComponent;
