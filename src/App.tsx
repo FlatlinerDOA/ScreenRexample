@@ -27,17 +27,17 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1>Screen Recording Demo</h1>
       <div className="card"> 
         <RecorderComponent />
       </div>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)} className="mt-4" >
-          count is {(count * 0.01).toFixed(2)}
+          Count is {(count * 0.01).toFixed(2)}
         </button>
       </div>
       <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+        Click to start recording your screen.
       </p>
     </>
   )
